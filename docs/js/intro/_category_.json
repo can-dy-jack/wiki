@@ -1,0 +1,8 @@
+{
+  "label": "先导",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "To known what's JavaScript."
+  }
+}
