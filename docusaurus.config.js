@@ -11,13 +11,15 @@ const config = {
   favicon: 'logo/frontend wiki.png',
 
   // Set the production url of your site here
-  url: 'https://kartjim.cn',
+  url: 'https://can-dy-jack.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: process.env.BABEL_ENV === 'development' ? '/' : '/wiki/',
 
+  // for github pages
   organizationName: 'can-dy-jack',
   projectName: 'wiki',
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -125,7 +127,7 @@ const config = {
             items: [
               {
                 label: 'github Issue',
-                href: 'https://github.com/can-dy-jack/wiki/issue',
+                href: 'https://github.com/can-dy-jack/wiki/issues',
               },
             ],
           },
