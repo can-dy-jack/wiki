@@ -3,18 +3,17 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const math = require('remark-math');
+const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Frontend Wiki',
   tagline: '前端开发知识库',
-  favicon: 'logo/frontend wiki.png',
+  favicon: '/logo/frontend wiki.png',
 
-  // Set the production url of your site here
-  url: 'https://can-dy-jack.github.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: process.env.BABEL_ENV === 'development' ? '/' : '/wiki/',
+  url: 'https://kartjim.gitee.io',
+  baseUrl: '/wiki/',
 
   // for github pages
   organizationName: 'can-dy-jack',
@@ -41,6 +40,8 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/can-dy-jack/wiki/tree/master/',
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
         },
         blog: {
           showReadingTime: true,
@@ -52,6 +53,12 @@ const config = {
         },
       }),
     ],
+  ],
+  stylesheets: [
+    {
+      href: '/katex/katex.min.css',
+      type: 'text/css'
+    },
   ],
 
   themeConfig:
@@ -85,6 +92,12 @@ const config = {
             sidebarId: 'React',
             position: 'left',
             label: 'React'
+          },
+          {
+            to: '/docs/leetcode',
+            sidebarId: 'leetcode',
+            position: 'left',
+            label: '力扣'
           },
           // {
           //   to: '/docs/vue',
