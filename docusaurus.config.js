@@ -10,7 +10,7 @@ const katex = require('rehype-katex');
 const config = {
   title: 'Frontend Wiki',
   tagline: '前端开发知识库',
-  favicon: '/logo/frontend wiki.png',
+  favicon: 'logo/frontend wiki.png',
 
   url: 'https://kartjim.gitee.io',
   baseUrl: '/wiki/',
@@ -61,6 +61,8 @@ const config = {
     },
   ],
 
+  plugins: ['docusaurus-plugin-sass', './src/plugins/local-search'],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -89,7 +91,7 @@ const config = {
           },
           {
             to: '/docs/react',
-            sidebarId: 'React',
+            sidebarId: 'react',
             position: 'left',
             label: 'React'
           },
@@ -112,6 +114,10 @@ const config = {
           //   label: 'CSS'
           // },
           {to: '/blog', label: '博客', position: 'left'},
+          {
+            type: 'search',
+            position: 'right'
+          },
           {
             href: 'https://github.com/can-dy-jack/',
             label: 'GitHub',

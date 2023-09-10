@@ -11,7 +11,7 @@ sidebar_position: 1
   "label": "Learn React",
   "position": 4,
   "link": {
-    "type": "generated-index",
+    "type": "generated-index.js",
     "description": "Become a complete JavaScript Developer."
   }
 }
