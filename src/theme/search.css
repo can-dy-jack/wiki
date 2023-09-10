@@ -1,0 +1,16 @@
+.ds-dropdown-menu {
+  position: fixed !important;
+  top: 50px !important;
+  left: 0;
+  height: calc(100vh - 135px);
+  overflow: auto;
+  width: 100%;
+  padding: 0 10px 10px 10px;
+}
+.algolia-autocomplete {
+  width: 100%;
+  display: flex;
+}
+.ds-suggestion a {
+  
+}

@@ -34,9 +34,6 @@ export default function SearchBar(props) {
         a.href = url;
         history.push(url);
       },
-      queryDataCallback: (...args) => {
-        console.log(args);
-      }
     });
   };
   const getSearchDoc = () =>
@@ -57,7 +54,7 @@ export default function SearchBar(props) {
         getSearchDoc(),
         getLunrIndex(),
         import("./DocSearch"),
-        import("./test.css")
+        import("./search.css")
       ]).then(([searchDocs, searchIndex, { default: DocSearch }]) => {
         console.log('loadAlgolia', searchDocs, searchIndex, { default: DocSearch })
 
@@ -66,6 +63,8 @@ export default function SearchBar(props) {
         }
         initAlgolia(searchDocs, searchIndex, DocSearch);
         setIndexReady(true);
+      }, e => {
+        console.warn(e);
       });
       initialized.current = true;
     }
@@ -156,14 +155,7 @@ export default function SearchBar(props) {
               }} />
             </div>
           </div>
-          <div className="search-dialog-body">
-            <div>search-dialog-body</div>
-            <div>
-
-            </div>
-            <div></div>
-
-          </div>
+          <div className="search-dialog-body"></div>
           <div className="search-dialog-foot">
             <div>
                   <span>

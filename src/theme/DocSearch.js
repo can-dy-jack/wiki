@@ -283,29 +283,29 @@ class DocSearch {
   }
 
   handleShown(input) {
-    const middleOfInput = input.offset().left + input.width() / 2;
-    let middleOfWindow = $(document).width() / 2;
-
-    if (isNaN(middleOfWindow)) {
-      middleOfWindow = 900;
-    }
-
-    const alignClass =
-      middleOfInput - middleOfWindow >= 0
-        ? "algolia-autocomplete-right"
-        : "algolia-autocomplete-left";
-    const otherAlignClass =
-      middleOfInput - middleOfWindow < 0
-        ? "algolia-autocomplete-right"
-        : "algolia-autocomplete-left";
-    const autocompleteWrapper = $(".algolia-autocomplete");
-    if (!autocompleteWrapper.hasClass(alignClass)) {
-      autocompleteWrapper.addClass(alignClass);
-    }
-
-    if (autocompleteWrapper.hasClass(otherAlignClass)) {
-      autocompleteWrapper.removeClass(otherAlignClass);
-    }
+    // const middleOfInput = input.offset().left + input.width() / 2;
+    // let middleOfWindow = $(document).width() / 2;
+    //
+    // if (isNaN(middleOfWindow)) {
+    //   middleOfWindow = 900;
+    // }
+    //
+    // const alignClass =
+    //   middleOfInput - middleOfWindow >= 0
+    //     ? "algolia-autocomplete-right"
+    //     : "algolia-autocomplete-left";
+    // const otherAlignClass =
+    //   middleOfInput - middleOfWindow < 0
+    //     ? "algolia-autocomplete-right"
+    //     : "algolia-autocomplete-left";
+    // const autocompleteWrapper = $(".algolia-autocomplete");
+    // if (!autocompleteWrapper.hasClass(alignClass)) {
+    //   autocompleteWrapper.addClass(alignClass);
+    // }
+    //
+    // if (autocompleteWrapper.hasClass(otherAlignClass)) {
+    //   autocompleteWrapper.removeClass(otherAlignClass);
+    // }
   }
 }
 
