@@ -1,15 +1,15 @@
 import lunr from "@generated/lunr.client";
+
 lunr.tokenizer.separator = /[\s\-/]+/;
 
-class LunrSearchAdapter {
+export default class SearchAdapter {
   constructor(searchDocs, searchIndex, baseUrl = '/') {
     this.searchDocs = searchDocs;
-    this.lunrIndex = lunr.Index.load(searchIndex);
+    this.index = lunr.Index.load(searchIndex);
     this.baseUrl = baseUrl;
   }
-
-  getLunrResult(input) {
-    return this.lunrIndex.query(function (query) {
+  getResult(input) {
+    return this.index.query(function (query) {
       const tokens = lunr.tokenizer(input);
       query.term(tokens, {
         boost: 10
@@ -49,17 +49,18 @@ class LunrSearchAdapter {
       }
     };
   }
+
   getTitleHit(doc, position, length) {
     const start = position[0];
     const end = position[0] + length;
-    let formattedTitle = doc.title.substring(0, start) + '<span class="algolia-docsearch-suggestion--highlight">' + doc.title.substring(start, end) + '</span>' + doc.title.substring(end, doc.title.length);
+    let formattedTitle = doc.title.substring(0, start) + '<span class="suggestion--highlight">' + doc.title.substring(start, end) + '</span>' + doc.title.substring(end, doc.title.length);
     return this.getHit(doc, formattedTitle)
   }
 
   getKeywordHit(doc, position, length) {
     const start = position[0];
     const end = position[0] + length;
-    let formattedTitle = doc.title + '<br /><i>Keywords: ' + doc.keywords.substring(0, start) + '<span class="algolia-docsearch-suggestion--highlight">' + doc.keywords.substring(start, end) + '</span>' + doc.keywords.substring(end, doc.keywords.length) + '</i>'
+    let formattedTitle = doc.title + '<br /><i>Keywords: ' + doc.keywords.substring(0, start) + '<span class="suggestion--highlight">' + doc.keywords.substring(start, end) + '</span>' + doc.keywords.substring(end, doc.keywords.length) + '</i>'
     return this.getHit(doc, formattedTitle)
   }
 
@@ -104,7 +105,7 @@ class LunrSearchAdapter {
     if (ellipsesBefore) {
       preview = '... ' + preview;
     }
-    preview += '<span class="algolia-docsearch-suggestion--highlight">' + doc.content.substring(start, end) + '</span>';
+    preview += '<span class="suggestion--highlight">' + doc.content.substring(start, end) + '</span>';
     preview += doc.content.substring(end, previewEnd);
     if (ellipsesAfter) {
       preview += ' ...';
@@ -112,16 +113,17 @@ class LunrSearchAdapter {
     return this.getHit(doc, null, preview);
 
   }
+
   search(input) {
     return new Promise((resolve, rej) => {
-      const results = this.getLunrResult(input);
+      const results = this.getResult(input);
       const hits = [];
       results.length > 5 && (results.length = 5);
       this.titleHitsRes = []
       this.contentHitsRes = []
       results.forEach(result => {
         const doc = this.searchDocs[result.ref];
-        const { metadata } = result.matchData;
+        const {metadata} = result.matchData;
         for (let i in metadata) {
           if (metadata[i].title) {
             if (!this.titleHitsRes.includes(result.ref)) {
@@ -139,11 +141,9 @@ class LunrSearchAdapter {
           }
         }
       });
-      hits.length > 5 && (hits.length = 5);
-      console.log('hits', hits)
+      // hits.length > 5 && (hits.length = 5);
+      // console.log('hits', hits)
       resolve(hits);
     });
   }
 }
-
-export default LunrSearchAdapter;

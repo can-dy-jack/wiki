@@ -24,4 +24,5 @@ yarn-error.log*
 /.vscode
 
 # 本地测试用
-/test
+**/test
+

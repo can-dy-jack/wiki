@@ -1,87 +1,81 @@
 // By default, the classic theme does not provide any SearchBar implementation
 // If you swizzled this, it is your responsibility to provide an implementation
 // export {default} from '@docusaurus/Noop';
-import React, {useState, useEffect, useRef, useCallback} from "react";
-import { useHistory } from "@docusaurus/router";
+import React, {useState, useEffect, useRef} from "react";
+import {SymbolsSearch, SymbolsClose, CodeStyle} from "./lib/components";
+import {useHistory} from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { usePluginData } from '@docusaurus/useGlobalData';
-import useIsBrowser from "@docusaurus/useIsBrowser";
+import {usePluginData} from '@docusaurus/useGlobalData';
+import Link from "@docusaurus/Link";
 import "./searchBar.scss";
+import Search from "./lib/Search";
 
 export default function SearchBar(props) {
-  const initialized = useRef(false);
-  const [indexReady, setIndexReady] = useState(false);
   const [showSearch, setSearchShow] = useState(false);
-  const [searchText, setSearchText] = useState("")
+  const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
   const input = useRef();
-  const isBrowser = useIsBrowser();
   const history = useHistory();
   const pluginData = usePluginData('local-search');
 
-  const { siteConfig = {} } = useDocusaurusContext();
-  const { baseUrl } = siteConfig;
+  const {siteConfig = {}} = useDocusaurusContext();
+  const {baseUrl} = siteConfig;
 
-  const initAlgolia = (searchDocs, searchIndex, DocSearch) => {
-    new DocSearch({
-      searchDocs,
-      searchIndex,
-      baseUrl,
-      debug: true,
-      inputSelector: "#search_input_react",
-      handleSelected: (_input, _event, suggestion) => {
-        const url = suggestion.url || "/";
-        const a = document.createElement("a");
-        a.href = url;
-        history.push(url);
-      },
-    });
-  };
   const getSearchDoc = () =>
     process.env.NODE_ENV === "production"
       ? fetch(`${baseUrl}${pluginData.fileNames.searchDoc}`).then(
         (content) => content.json()
       )
-      : Promise.resolve([]);
+      : fetch(`${baseUrl}test/search-doc-1694356480286.json`).then(
+        (content) => content.json()
+      )
+  // : Promise.resolve([]);
   const getLunrIndex = () =>
     process.env.NODE_ENV === "production"
       ? fetch(`${baseUrl}${pluginData.fileNames.lunrIndex}`).then(
         (content) => content.json()
       )
-      : Promise.resolve([]);
-  const loadAlgolia = () => {
-    if (!initialized.current) {
-      Promise.all([
-        getSearchDoc(),
-        getLunrIndex(),
-        import("./DocSearch"),
-        import("./search.css")
-      ]).then(([searchDocs, searchIndex, { default: DocSearch }]) => {
-        console.log('loadAlgolia', searchDocs, searchIndex, { default: DocSearch })
+      : fetch(`${baseUrl}test/lunr-index-1694356480286.json`).then(
+        (content) => content.json()
+      )
+  // : Promise.resolve([]);
+  const loadAlgolia = (e) => {
+    setSearchText(e.target.value);
 
-        if (searchDocs.length === 0) {
-          return;
-        }
-        initAlgolia(searchDocs, searchIndex, DocSearch);
-        setIndexReady(true);
-      }, e => {
-        console.warn(e);
-      });
-      initialized.current = true;
-    }
+    Promise.all([
+      getSearchDoc(),
+      getLunrIndex(),
+    ]).then(([searchDocs, searchIndex]) => {
+      // console.log('loadAlgolia', searchDocs, searchIndex)
+      if (searchDocs.length === 0) return;
+      SearchText(searchDocs, searchIndex, e.target.value);
+    }, console.warn);
   };
-  if (isBrowser) {
-    loadAlgolia();
-  }
-
+  const SearchText = (searchDocs, searchIndex, input) => {
+    Search(searchDocs, searchIndex, input.trim(), baseUrl).then(res => {
+      setSearchResult(res);
+    });
+  };
 
   const showSearchClick = (isShow) => () => {
     setSearchShow(isShow);
 
     if (isShow) {
+      setSearchResult([]);
+      setSearchText("");
       document.documentElement.style.overflow = 'hidden';
     } else {
       document.documentElement.style.overflow = 'auto';
     }
+  }
+
+  const clearSearch = () => {
+    setSearchText("");
+    setSearchResult([]);
+  }
+  const clickSearch = () => {
+    setSearchResult([]);
+    loadAlgolia({target: {value: searchText}});
   }
 
   const onKeyDown = e => {
@@ -106,7 +100,7 @@ export default function SearchBar(props) {
   return (
     <>
       {/* 导航条 */}
-      <div className="search-bar" >
+      <div className="search-bar">
         <div className="search-bar-btn" onClick={showSearchClick(true)}>
           <div className="search-bar-icon flex-center">
             <SymbolsSearch color="#999"/>
@@ -121,41 +115,94 @@ export default function SearchBar(props) {
       }}>
         <div className="search-dialog-content">
           <div className="search-dialog-input" onClick={e => input.current.focus()}>
-            <div className="flex-center">
+            <div className="flex-center" onClick={clickSearch}>
               <SymbolsSearch color="var(--ifm-color-primary)" style={{
                 fontSize: "1.3em",
                 cursor: "pointer"
-              }} />
+              }}/>
             </div>
-            <div className="flex-center search-dialog-input-inner navbar__search" key="search-box">
-              {/*
-                    onChange={e => setSearchText(e.target.value)}
-                    value={searchText}
-                  */}
-              <span
-                aria-label="expand searchbar"
-                role="button"
-                tabIndex={0}
-              />
+            <div className="flex-center search-dialog-input-inner">
               <input
                 id="search_input_react"
                 ref={input}
-                type="search"
                 aria-label="Search"
-                placeholder={indexReady ? '输入要查找的内容' : '搜索中...'}
-                disabled={!indexReady}
-                onClick={loadAlgolia}
-                onMouseOver={loadAlgolia}
+                placeholder='输入要查找的内容'
+                onChange={loadAlgolia}
+                value={searchText}
+                autoComplete="off"
               />
             </div>
-            <div className="flex-center" onClick={e => setSearchText("")}>
+            <div className="flex-center" onClick={clearSearch}>
               <SymbolsClose color="#aaa" style={{
                 fontSize: "1.2em",
                 cursor: "pointer"
-              }} />
+              }}/>
             </div>
           </div>
-          <div className="search-dialog-body"></div>
+          <div className="search-dialog-body">
+            <section className="search-result">
+              {
+                (searchResult && searchResult.length > 0) ? searchResult.map((item, index) => {
+                  let Lel0 = () => {
+                    if (index > 0 && searchResult[index - 1].hierarchy.lvl0 === item.hierarchy.lvl0) {
+                      return (<></>);
+                    } else {
+                      return (<div className="search-result-lvl0">{item.hierarchy.lvl0}</div>);
+                    }
+                  };
+                  return (
+                    <>
+                      <Lel0 />
+                      <Link
+                        href={item.url || "/"}
+                        key={index}
+                        aria-label="Link to the result"
+                        className="search-result-item"
+                        onClick={showSearchClick(false)}
+                      >
+                        <div className="search-result-lvl1">{item.hierarchy.lvl1}</div>
+                        <div className="search-result-content">
+                          {
+                            item._highlightResult && (
+                              <div>
+                                {
+                                  item._highlightResult.hierarchy.lvl1 ? (
+                                    <div
+                                      dangerouslySetInnerHTML={{__html: item._highlightResult.hierarchy.lvl1?.value}}
+                                      className="search-result-item-title-lvl1"
+                                    ></div>
+                                  ) : (
+                                    <div
+                                      dangerouslySetInnerHTML={{__html: item._highlightResult.hierarchy.lvl0?.value}}
+                                      className="search-result-item-title-lvl0"
+                                    ></div>
+                                  )
+                                }
+                              </div>
+                            )
+                          }
+                          {
+                            item._snippetResult &&
+                            (<div
+                              dangerouslySetInnerHTML={{__html: item._snippetResult.content.value}}
+                              className="search-result-item-content"
+                            >
+                            </div>)
+                          }
+                        </div>
+                      </Link>
+                    </>
+                  )
+                }) : (
+                  <div className="search-result-empty">No results found{
+                    searchText ?
+                      <span dangerouslySetInnerHTML={{__html: ` for  query <b>${searchText}</b>`}}></span> :
+                      ''
+                  } .</div>
+                )
+              }
+            </section>
+          </div>
           <div className="search-dialog-foot">
             <div>
                   <span>
@@ -179,28 +226,3 @@ export default function SearchBar(props) {
   )
 }
 
-function SymbolsSearch(props) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
-      <path fill="currentColor"
-            d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5q0-2.725 1.888-4.612T9.5 3q2.725 0 4.612 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3l-1.4 1.4ZM9.5 14q1.875 0 3.188-1.313T14 9.5q0-1.875-1.313-3.188T9.5 5Q7.625 5 6.312 6.313T5 9.5q0 1.875 1.313 3.188T9.5 14Z"></path>
-    </svg>
-  )
-}
-
-function SymbolsClose(props) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}><path fill="currentColor" d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6L6.4 19Z"></path></svg>
-  )
-}
-
-function CodeStyle(props) {
-  return (
-    <kbd style={{
-      color: "var(--kbd-colo)",
-      boxShadow: "var(--kbd-box-shadow)",
-      marginRight: ".4em",
-      background: "var(--kbd-bg)"
-    }} {...props}>{ props.children }</kbd>
-  )
-}
