@@ -26,19 +26,13 @@ export default function SearchBar(props) {
       ? fetch(`${baseUrl}${pluginData.fileNames.searchDoc}`).then(
         (content) => content.json()
       )
-      : fetch(`${baseUrl}test/search-doc-1694356480286.json`).then(
-        (content) => content.json()
-      )
-  // : Promise.resolve([]);
+      : Promise.resolve([]);
   const getLunrIndex = () =>
     process.env.NODE_ENV === "production"
       ? fetch(`${baseUrl}${pluginData.fileNames.lunrIndex}`).then(
         (content) => content.json()
       )
-      : fetch(`${baseUrl}test/lunr-index-1694356480286.json`).then(
-        (content) => content.json()
-      )
-  // : Promise.resolve([]);
+      : Promise.resolve([]);
   const loadAlgolia = (e) => {
     setSearchText(e.target.value);
 

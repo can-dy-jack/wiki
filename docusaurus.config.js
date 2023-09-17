@@ -6,6 +6,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const math = require('remark-math');
 const katex = require('rehype-katex');
 
+// baseUrl
+const base = "/wiki/";
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Frontend Wiki',
@@ -13,7 +16,7 @@ const config = {
   favicon: 'logo/frontend wiki.png',
 
   url: 'https://kartjim.gitee.io',
-  baseUrl: '/wiki/',
+  baseUrl: base,
 
   // for github pages
   organizationName: 'can-dy-jack',
@@ -56,7 +59,7 @@ const config = {
   ],
   stylesheets: [
     {
-      href: '/katex/katex.min.css',
+      href: base + 'katex/katex.min.css',
       type: 'text/css'
     },
   ],
