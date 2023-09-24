@@ -21,6 +21,16 @@
   --code-color: #777;
   --ifm-alert-border-width: 1px;
   --ifm-alert-border-left-width: 1px;
+
+  --ifm-color-purple-contrast-background: #f1d3f1;
+  --ifm-color-purple-contrast-foreground: #500650;
+  --ifm-color-purple-dark: purple;
+  --ifm-color-paper-contrast-background: #ece5e3;
+  --ifm-color-paper-contrast-foreground: #433434;
+  --ifm-color-paper-dark: #d3cbc6;
+  --ifm-color-pink-contrast-background: #ece5e3;
+  --ifm-color-pink-contrast-foreground: #433434;
+  --ifm-color-pink-dark: #d3cbc6;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -36,6 +46,13 @@
 
   --ifm-footer-background-color: #282a2e;
   --code-color: #aaa;
+
+  --ifm-color-purple-contrast-background: #2c032c;
+  --ifm-color-purple-contrast-foreground: #f6d9f6;
+  --ifm-color-paper-contrast-background: #383534;
+  --ifm-color-paper-contrast-foreground: #d3cbc6;
+  --ifm-color-pink-contrast-background: #383534;
+  --ifm-color-pink-contrast-foreground: #d3cbc6;
 }
 
 .table-of-contents .table-of-contents__link--active {
@@ -48,5 +65,41 @@ code {
 p:has(img) {
   text-align: center;
 }
-
-
+.alert--purple {
+  --ifm-alert-background-color: var(
+    --ifm-color-purple-contrast-background
+  );
+  --ifm-alert-background-color-highlight: rgba(128, 0, 128, 0.15);
+  --ifm-alert-foreground-color: var(
+    --ifm-color-purple-contrast-foreground
+  );
+  --ifm-alert-border-color: var(--ifm-color-purple-dark);
+}
+.alert--paper {
+  --ifm-alert-background-color: var(
+    --ifm-color-paper-contrast-background
+  );
+  --ifm-alert-background-color-highlight: rgba(128, 110, 100, 0.15);
+  --ifm-alert-foreground-color: var(
+    --ifm-color-paper-contrast-foreground
+  );
+  --ifm-alert-border-color: var(--ifm-color-paper-dark);
+}
+.alert--pink {
+  background-image: linear-gradient(45deg, #ee9ca7,#ffdde1);
+  --ifm-alert-background-color-highlight: rgba(148, 100, 100, 0.15);
+  --ifm-alert-foreground-color: #333;
+  --ifm-alert-border-color: pink;
+}
+[data-theme='dark'] .alert--pink {
+  background-image: linear-gradient(45deg, #754c4f, #695858);
+  --ifm-alert-foreground-color: #eee;
+}
+.alert--colorful {
+  background-image: linear-gradient(to right, #c6ffdd, #fbd786, #f7797d);
+  --ifm-alert-foreground-color: #222;
+}
+[data-theme='dark'] .alert--colorful {
+  background-image: linear-gradient(to right, #688875, #887749, #884043);
+  --ifm-alert-foreground-color: #efefef;
+}

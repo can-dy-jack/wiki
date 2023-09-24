@@ -45,6 +45,15 @@ const config = {
             'https://github.com/can-dy-jack/wiki/tree/master/',
           remarkPlugins: [math],
           rehypePlugins: [katex],
+          admonitions: {
+            tag: ':::',
+            keywords: [
+              'note', 'tip', 'info', 'caution', 'danger',
+              'purple', 'paper',
+              'pink',
+              'colorful'
+            ],
+          },
         },
         blog: {
           showReadingTime: true,
